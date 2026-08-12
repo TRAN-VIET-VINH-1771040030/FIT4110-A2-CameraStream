@@ -1,0 +1,535 @@
+openapi: 3.1.0
+info:
+  title: Camera Stream Service API
+  description: |
+    Service nhận dữ liệu từ camera, quản lý frame ảnh/video stream,
+    và gọi AI Vision khi phát hiện điều kiện cần phân tích.
+    
+    **Product:** A
+    **Team:** Camera Stream
+    **Service Role:** Provider (cung cấp API cho AI Vision, Analytics, Core Business)
+  version: 1.0.0
+  contact:
+    name: Camera Stream Team
+    email: camera-stream@smartcampus.edu.vn
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: http://camera-stream:8000
+    description: Docker network
+
+tags:
+  - name: Camera Management
+    description: Quản lý thông tin camera
+  - name: Frame Management
+    description: Upload và quản lý frame ảnh
+  - name: AI Analysis
+    description: Tương tác với AI Vision Service
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      tags:
+        - Camera Management
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                    example: healthy
+
+  /cameras:
+    get:
+      tags:
+        - Camera Management
+      summary: Lấy danh sách tất cả camera
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, all]
+            default: all
+          description: Lọc camera theo trạng thái
+        - name: location
+          in: query
+          schema:
+            type: string
+          description: Lọc theo vị trí (tìm kiếm gần đúng)
+      responses:
+        '200':
+          description: Danh sách camera
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Camera'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /cameras/{cameraId}:
+    get:
+      tags:
+        - Camera Management
+      summary: Lấy thông tin camera theo ID
+      parameters:
+        - $ref: '#/components/parameters/cameraId'
+      responses:
+        '200':
+          description: Thông tin chi tiết camera
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Camera'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /frames:
+    post:
+      tags:
+        - Frame Management
+      summary: Upload frame ảnh từ camera
+      description: |
+        Nhận frame ảnh từ camera và lưu vào hệ thống.
+        Nếu motion_detected = true, tự động gửi sang AI Vision để phân tích.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FrameUpload'
+      responses:
+        '202':
+          description: Đã nhận frame thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrameUploadResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /frames/{frameId}:
+    get:
+      tags:
+        - Frame Management
+      summary: Lấy thông tin frame theo ID
+      parameters:
+        - name: frameId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID của frame
+      responses:
+        '200':
+          description: Thông tin frame
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrameUploadResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /frames/{frameId}/analyze:
+    post:
+      tags:
+        - AI Analysis
+      summary: Gửi frame cho AI Vision phân tích
+      description: |
+        Gửi frame đến AI Vision Service để phân tích.
+        Hỗ trợ cả synchronous và asynchronous (webhook callback).
+      parameters:
+        - name: frameId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID của frame cần phân tích
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callback_url:
+                  type: string
+                  format: uri
+                  nullable: true
+                  description: URL webhook để nhận kết quả async
+                options:
+                  type: object
+                  properties:
+                    detect_face:
+                      type: boolean
+                      default: false
+                    detect_object:
+                      type: boolean
+                      default: true
+              required: [callback_url]
+      responses:
+        '202':
+          description: Đã gửi yêu cầu phân tích (async)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: req-20260502-090500-abc123
+                  status:
+                    type: string
+                    enum: [processing]
+                  estimated_time:
+                    type: integer
+                    example: 5
+        '200':
+          description: Kết quả phân tích (sync)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /ai-results:
+    post:
+      tags:
+        - AI Analysis
+      summary: AI Vision gửi kết quả phân tích (webhook)
+      description: Webhook endpoint để AI Vision gửi kết quả phân tích
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIResult'
+      responses:
+        '200':
+          description: Đã nhận kết quả thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  message:
+                    type: string
+                    example: AI result processed successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /events:
+    post:
+      tags:
+        - Frame Management
+      summary: Gửi sự kiện camera cho Analytics/Core Business
+      description: Gửi sự kiện camera (bất thường, phát hiện, v.v.) đến các service khác
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                camera_id:
+                  type: string
+                  example: cam-gate-01
+                event_type:
+                  type: string
+                  enum: [motion_detected, object_detected, camera_offline, camera_online]
+                timestamp:
+                  type: string
+                  format: date-time
+                data:
+                  type: object
+                  nullable: true
+      responses:
+        '200':
+          description: Đã gửi sự kiện thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  event_id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  parameters:
+    cameraId:
+      name: cameraId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^cam-[a-z0-9-]+$'
+        example: cam-gate-01
+      description: Mã định danh của camera (định dạng: cam-xxx-xxx)
+
+  schemas:
+    Camera:
+      type: object
+      required:
+        - camera_id
+        - name
+        - status
+      properties:
+        camera_id:
+          type: string
+          example: cam-gate-01
+        name:
+          type: string
+          example: Cổng chính
+        status:
+          type: string
+          enum: [active, inactive, maintenance]
+          example: active
+        location:
+          type: string
+          nullable: true
+          example: Khu vực cổng chính
+        ip_address:
+          type: string
+          format: ipv4
+          nullable: true
+          example: 192.168.1.100
+        stream_url:
+          type: string
+          format: uri
+          nullable: true
+          example: rtsp://192.168.1.100:554/stream
+        last_heartbeat:
+          type: string
+          format: date-time
+          nullable: true
+          example: 2026-05-02T09:00:00Z
+
+    FrameUpload:
+      type: object
+      required:
+        - camera_id
+        - image_url
+        - timestamp
+      properties:
+        camera_id:
+          type: string
+          example: cam-gate-01
+        image_url:
+          type: string
+          format: uri
+          description: URL của ảnh (lưu trên storage)
+          example: https://storage.smartcampus.edu.vn/frames/cam-gate-01/2026-05-02T09-05-00.jpg
+        motion_detected:
+          type: boolean
+          default: false
+          example: true
+        timestamp:
+          type: string
+          format: date-time
+          example: 2026-05-02T09:05:00Z
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+          example:
+            resolution: 1920x1080
+            fps: 30
+            brightness: 75
+
+    FrameUploadResponse:
+      type: object
+      required:
+        - frame_id
+        - status
+        - timestamp
+      properties:
+        frame_id:
+          type: string
+          example: frame-20260502-090500-abc123def456
+        status:
+          type: string
+          enum: [accepted, rejected]
+          example: accepted
+        message:
+          type: string
+          nullable: true
+          example: Frame accepted for processing
+        timestamp:
+          type: string
+          format: date-time
+          example: 2026-05-02T09:05:01Z
+
+    # Sử dụng oneOf + discriminator cho kết quả AI
+    AIResult:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/AIDetectionResult'
+        - $ref: '#/components/schemas/AINoDetectionResult'
+      discriminator:
+        propertyName: detected
+
+    AIDetectionResult:
+      type: object
+      required:
+        - detected
+        - camera_id
+        - object
+        - confidence
+        - risk_level
+        - timestamp
+      properties:
+        detected:
+          type: boolean
+          enum: [true]
+          const: true
+        camera_id:
+          type: string
+          example: cam-gate-01
+        object:
+          type: string
+          enum: [person, vehicle, animal, face, unknown]
+          example: person
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          example: 0.91
+        risk_level:
+          type: string
+          enum: [low, medium, high, critical]
+          example: medium
+        bbox:
+          type: object
+          nullable: true
+          properties:
+            x:
+              type: integer
+            y:
+              type: integer
+            width:
+              type: integer
+            height:
+              type: integer
+        timestamp:
+          type: string
+          format: date-time
+          example: 2026-05-02T09:10:00Z
+        message:
+          type: string
+          nullable: true
+          example: Detected person at main gate
+
+    AINoDetectionResult:
+      type: object
+      required:
+        - detected
+        - camera_id
+        - timestamp
+      properties:
+        detected:
+          type: boolean
+          enum: [false]
+          const: false
+        camera_id:
+          type: string
+          example: cam-gate-01
+        timestamp:
+          type: string
+          format: date-time
+          example: 2026-05-02T09:10:00Z
+        message:
+          type: string
+          nullable: true
+          example: No object detected
+
+    # Problem Details theo RFC 7807
+    ProblemDetails:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI tham chiếu đến loại lỗi
+          example: https://api.smartcampus.edu.vn/errors/invalid-frame
+        title:
+          type: string
+          description: Tiêu đề lỗi ngắn gọn
+          example: Dữ liệu frame không hợp lệ
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+          description: HTTP status code
+          example: 400
+        detail:
+          type: string
+          nullable: true
+          description: Chi tiết lỗi
+          example: Trường 'image_url' không đúng định dạng URI
+        instance:
+          type: string
+          format: uri
+          nullable: true
+          description: URI chỉ định instance lỗi cụ thể
+        timestamp:
+          type: string
+          format: date-time
+          nullable: true
+          description: Thời điểm xảy ra lỗi
+
+  responses:
+    BadRequest:
+      description: Yêu cầu không hợp lệ
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotFound:
+      description: Không tìm thấy tài nguyên
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    ServerError:
+      description: Lỗi xử lý từ server
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
