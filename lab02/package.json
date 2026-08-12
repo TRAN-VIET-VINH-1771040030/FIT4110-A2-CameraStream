@@ -1,0 +1,9 @@
+﻿{
+  "name": "camera-stream-lab02",
+  "version": "1.0.0",
+  "description": "Camera Stream Service - Lab02 OpenAPI",
+  "scripts": {
+    "mock": "prism mock openapi.yaml --port 4010",
+    "lint": "spectral lint openapi.yaml"
+  }
+}
