@@ -1,358 +1,88 @@
-# FIT4110 — Lab 02 OpenAPI 3.1 Contract-First
+# Lab 02 - OpenAPI Contract-First Design
 
-Repo này dùng cho **Lab 02 — Thực hành đàm phán và viết OpenAPI 3.1** của học phần **Dịch vụ kết nối và công nghệ nền tảng (FIT4110)**.
-
-Lab 02 nối tiếp trực tiếp Lab 01 trong repo `FIT4110_setup`:
-
-- Lab 01: sinh viên thiết lập môi trường và nộp `service-boundary.md`.
-- Lab 02: sinh viên chuyển Service Boundary thành **hợp đồng API** bằng `openapi.yaml`.
-- Hai nhóm ở hai vai **Consumer** và **Provider** phải đàm phán trước khi code.
-- Dependency Map đầy đủ của Smart Campus gồm **10 cặp phụ thuộc**: REST sync viết bằng OpenAPI trong Lab 02, Queue async ghi nhận để chuyển sang Lab 03.
-
-> Nguyên tắc trọng tâm: **contract-first** — không viết code trước khi chốt hợp đồng API.
+**Camera Stream Service** - Thiết kế hợp đồng API bằng OpenAPI 3.1.0
 
 ---
 
-## 1. Sinh viên cần làm gì trong Lab 02?
+## 📌 Mục tiêu
 
-Mỗi cặp đàm phán cần hoàn thành các artefact sau:
+- Thiết kế API Contract cho Camera Stream Service
+- Viết `openapi.yaml` theo chuẩn OpenAPI 3.1.0
+- Đàm phán và thống nhất hợp đồng với nhóm AI Vision
+- Kiểm tra hợp đồng bằng Spectral
+- Chạy Mock Server bằng Prism
 
-```text
-openapi.yaml
-negotiation-log.md
-docs/analysis-provider.md
-docs/analysis-consumer.md
-evidence/buoi-02/spectral-report.txt
-evidence/buoi-02/mock-screenshots/req-01-*.png ... req-05-*.png
-VERSIONING.md
+---
+
+## 📁 Cấu trúc thư mục
+
 ```
-
-Bài làm đạt yêu cầu khi:
-
-- `openapi.yaml` dùng **OpenAPI 3.1.0**.
-- Có tối thiểu 4 path phù hợp user story của cặp.
-- Có schema đặt trong `components/schemas`, dùng `$ref` thay vì inline schema dài.
-- Có ít nhất một ví dụ `oneOf` + `discriminator`.
-- Có ít nhất một trường dùng union type với `null`, ví dụ `type: [string, "null"]`.
-- Response lỗi 4xx/5xx dùng `Problem Details`.
-- File pass `spectral lint` với `campus-spectral.yaml`.
-- Mock server chạy được bằng Prism và có 5 request mẫu làm bằng chứng.
-- `negotiation-log.md` có tối thiểu 6 issue, rationale rõ, có sign-off 2 bên.
-
----
-
-## 2. Cấu trúc repo
-
-```text
-FIT4110_lab02_openapi/
-  README.md
-  openapi.yaml
-  campus-spectral.yaml
-  negotiation-log.md
-  package.json
-  docs/
-    lab02-guide.md
-    pairing-matrix.md
-    openapi-authoring-guide.md
-    swagger-online-workflow.md
-    event-contract-template.md
-    analysis-provider.md
-    analysis-consumer.md
-  user-stories/
-    README.md
-    pair-01-camera-ai-vision.md
-    pair-02-core-ai-vision.md
-    pair-03-core-access-gate.md
-    pair-04-core-notification-async.md
-    pair-05-iot-core-async.md
-    pair-06-iot-analytics-async.md
-    pair-07-camera-analytics-async.md
-    pair-08-core-analytics-async.md
-    pair-09-access-analytics-async.md
-    pair-10-access-core-policy.md
-  evidence/
-    buoi-02/
-      README.md
-      checklist.md
-      known-issues.md
-      mock-screenshots/
-        .gitkeep
-  scripts/
-    install_lab02_cli.sh
-    install_lab02_cli.ps1
-    lint_openapi.sh
-    lint_openapi.ps1
-    mock_openapi.sh
-    mock_openapi.ps1
-    collect_session02_evidence.sh
-    collect_session02_evidence.ps1
-  .github/workflows/check-lab02.yml
+lab02/
+├── openapi.yaml               # API Specification
+├── negotiation-log.md         # Biên bản đàm phán
+├── README.md                  # Tài liệu lab02
+├── package.json                # Dependencies
+├── .spectral.yaml               # Spectral rules
+├── campus-spectral.yaml          # Spectral rules (full)
+├── docs/
+│   ├── analysis-provider.md     # Phân tích góc nhìn Provider
+│   └── analysis-consumer.md     # Phân tích góc nhìn Consumer
+└── evidence/
+    └── buoi-02/
+        └── mock-screenshots/     # Ảnh minh chứng mock server
+            ├── req-01-health.png
+            ├── req-02-cameras.png
+            ├── req-03-camera-by-id.png
+            └── req-04-upload-frame.png
 ```
 
 ---
 
-## 3. Cài đặt công cụ
+## 🚀 Cách chạy
 
-Yêu cầu tối thiểu:
-
-- Git
-- Node.js LTS phiên bản 20 trở lên
-- npm
-- **Swagger Editor Online** để soạn và xem trước `openapi.yaml`
-- VS Code hoặc editor YAML/OpenAPI tương đương nếu muốn sửa offline
-- `curl` để gọi thử Prism mock server; 
-
-### macOS/Linux
+### 1. Cài đặt công cụ
 
 ```bash
-chmod +x scripts/*.sh
-./scripts/install_lab02_cli.sh
+npm install
 ```
 
-### Windows PowerShell
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\scripts\install_lab02_cli.ps1
-```
-
-Có thể cài qua npm script:
+### 2. Kiểm tra OpenAPI
 
 ```bash
-npm run install:cli
+spectral lint openapi.yaml
 ```
 
----
-
-## 4. Quy trình thực hành gợi ý
-
-### Bước 1. Xác định cặp đàm phán
-
-Xem bảng trong:
-
-```text
-docs/pairing-matrix.md
-```
-
-Mở đúng user story trong thư mục:
-
-```text
-user-stories/
-```
-
-Ví dụ REST sync:
-
-```text
-user-stories/pair-01-camera-ai-vision.md
-```
-
-Ví dụ Queue async:
-
-```text
-user-stories/pair-08-core-analytics-async.md
-```
-
-Queue async được đưa vào Dependency Map để không bỏ sót kiến trúc, nhưng Lab 02 chưa yêu cầu Postman và chưa yêu cầu đặc tả AsyncAPI đầy đủ.
-
----
-
-### Bước 2. Mỗi bên phân tích độc lập
-
-Provider điền:
-
-```text
-docs/analysis-provider.md
-```
-
-Consumer điền:
-
-```text
-docs/analysis-consumer.md
-```
-
-Không trao đổi quá sớm. Mục tiêu là mỗi bên phải có góc nhìn riêng để đưa vào bàn đàm phán.
-
----
-
-### Bước 3. Viết bản thảo `openapi.yaml` bằng Swagger Editor Online
-
-Trong Lab 02, sinh viên ưu tiên dùng **Swagger Editor Online** tại:
-
-```text
-https://editor.swagger.io
-```
-
-Quy trình gợi ý:
-
-1. Mở `openapi.yaml` trong repo.
-2. Copy toàn bộ nội dung YAML.
-3. Dán vào khung bên trái của Swagger Editor Online.
-4. Quan sát phần preview bên phải để phát hiện lỗi cú pháp, thiếu schema, thiếu response hoặc mô tả chưa rõ.
-5. Sau khi chỉnh xong, copy YAML từ Swagger Editor về lại file `openapi.yaml` trong repo.
-6. Commit file đã sửa lên GitHub.
-
-> Swagger Editor Online giúp xem nhanh tài liệu API và lỗi cú pháp. Tuy nhiên, tiêu chí chấm chính vẫn là `spectral lint` với `campus-spectral.yaml`, vì Swagger Editor không kiểm tra đầy đủ rule riêng của lớp.
-
-Có thể bắt đầu từ file mẫu trong repo:
-
-```text
-openapi.yaml
-```
-
-Sau khi sửa, kiểm tra bằng:
+### 3. Chạy Mock Server
 
 ```bash
-npm run lint
-```
-
-hoặc:
-
-```bash
-./scripts/lint_openapi.sh
-```
-
-Windows:
-
-```powershell
-.\scripts\lint_openapi.ps1
-```
-
----
-
-### Bước 4. Đàm phán và ghi biên bản
-
-Hai nhóm cùng mở:
-
-```text
-negotiation-log.md
-```
-
-Mỗi issue cần có:
-
-- Bối cảnh
-- Vấn đề
-- Đề xuất
-- Quyết định
-- Rationale
-- Tác động đến service
-
-Commit bản đã ký:
-
-```bash
-git add openapi.yaml negotiation-log.md docs/analysis-provider.md docs/analysis-consumer.md
- git commit -m "chore(contract): <ten-cap> v1.0 signed-off"
-```
-
----
-
-### Bước 5. Chạy Spectral và lưu báo cáo
-
-```bash
-npm run lint:report
-```
-
-hoặc:
-
-```bash
-./scripts/collect_session02_evidence.sh
-```
-
-Kết quả cần có:
-
-```text
-evidence/buoi-02/spectral-report.txt
-```
-
----
-
-### Bước 6. Chạy Prism mock server và test bằng curl
-
-```bash
-npm run mock
-```
-
-hoặc:
-
-```bash
-./scripts/mock_openapi.sh
-```
-
-Server mặc định chạy ở:
-
-```text
-http://localhost:4010
-```
-
-Lab 02 **không yêu cầu dùng Postman**. Sinh viên test 5 request mẫu bằng `curl` trong Terminal/PowerShell hoặc chạy script mẫu:
-
-```bash
-./scripts/test_mock_with_curl.sh
-```
-
-Windows:
-
-```powershell
-.\scripts\test_mock_with_curl.ps1
-```
-
-Khi chụp minh chứng, ảnh cần có lệnh `curl`, status code và response body. Lưu ảnh vào:
-
-```text
-evidence/buoi-02/mock-screenshots/
-```
-
----
-
-## 5. Lệnh kiểm tra nhanh
-
-```bash
-node --version
-npm --version
-spectral --version
-prism --version
-spectral lint openapi.yaml --ruleset campus-spectral.yaml
 prism mock openapi.yaml --port 4010
 ```
 
-Ví dụ gọi mock bằng `curl`:
+### 4. Test API
 
 ```bash
-curl -i http://localhost:4010/health
-curl -i http://localhost:4010/alerts/recent -H "Authorization: Bearer test-token"
+# Health check
+curl http://127.0.0.1:4010/health
+
+# Lấy danh sách camera
+curl http://127.0.0.1:4010/cameras
+
+# Lấy camera theo ID
+curl http://127.0.0.1:4010/cameras/cam-01
+
+# Upload frame
+curl -X POST http://127.0.0.1:4010/frames -H "Content-Type: application/json" -d '{"camera_id":"cam-01","image_url":"https://example.com/frame.jpg","timestamp":"2026-08-13T09:05:00Z"}'
 ```
 
 ---
 
-## 6. Nộp bài
+## ✅ Kết quả
 
-```bash
-git status
-git add openapi.yaml negotiation-log.md VERSIONING.md docs evidence/buoi-02
-git commit -m "submit: lab02 openapi contract evidence"
-git push
-```
+| Công việc | Trạng thái |
+|-----------|------------|
+| openapi.yaml | ✅ Hoàn thành |
+| Spectral lint | ⏳ Chờ kiểm tra |
+| Prism mock server | ⏳ Chờ kiểm tra |
+| Negotiation log | ✅ Đã đàm phán |
 
----
-
-## 7. Không được commit
-
-Không commit các file sau:
-
-```text
-*.doc
-*.docx
-*.ppt
-*.pptx
-.env
-node_modules/
-file dữ liệu lớn
-file model lớn
-```
-
-Repo đã có GitHub Actions để chặn file Word và kiểm tra cấu trúc Lab 02.
-
----
-
-## 8. Tinh thần của Lab 02
-
-> Không nộp “API em nghĩ là đúng”, mà nộp **hợp đồng API đã được đàm phán, kiểm tra và có bằng chứng chạy được**.
+**Ngày hoàn thành:** 2026-08-13
