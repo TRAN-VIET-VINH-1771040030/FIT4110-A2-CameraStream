@@ -1,50 +1,97 @@
-## 🔵 Issue #01: Định dạng frame gửi đến AI Vision
+# Biên bản đàm phán hợp đồng API
 
-**Trạng thái:** ⏳ PENDING - Chờ đàm phán với AI Vision team
-
-**Đề xuất từ Camera Stream:**
-```json
-{
-  "camera_id": "cam-gate-01",
-  "image_url": "https://...",
-  "timestamp": "2026-05-02T09:05:00Z"
-}
-
+- Cặp đàm phán:
+- Product: A / B
+- Provider:
+- Consumer:
+- Phiên: v1.0
+- Ngày:
 
 ---
 
-### Cách 2: Tạo **"Giả định đàm phán"** dựa trên tài liệu mẫu
+## Issue #1
 
-Bạn có thể sử dụng nội dung tôi đã viết sẵn ở trên, chỉ cần thay đổi tên và ghi chú:
-
-```markdown
-# Negotiation Log - Camera Stream Service
-
-**Trạng thái:** 📝 DRAFT - Chưa đàm phán chính thức
-**Ngày tạo:** 2026-05-02
-
----
-
-## 📋 Các issue dự kiến (sẽ đàm phán với AI Vision)
-
-> **Lưu ý:** Đây là các issue dự kiến dựa trên phân tích của Camera Stream.
-> Sẽ cập nhật sau khi đàm phán thực tế với AI Vision team.
-
-### Issue #01: Định dạng frame upload
-... (nội dung như đã viết)
-**Trạng thái:** ⏳ PENDING
-
-### Issue #02: Cấu trúc kết quả AI
-... (nội dung như đã viết)
-**Trạng thái:** ⏳ PENDING
-
-... (tiếp tục đến issue #06)
+- Raised by: Consumer / Provider
+- Endpoint:
+- Concern:
+- Proposal:
+- Resolution: Accepted / Rejected / Modified
+- Rationale:
+- Impact:
 
 ---
 
-## ✅ Sign-off (sẽ ký sau khi đàm phán)
+## Issue #2
 
-| Vai trò | Team | Đại diện | Chữ ký | Ngày |
-|---------|------|----------|--------|------|
-| Provider | Camera Stream | [Tên bạn] | _________ | ___ |
-| Consumer | AI Vision | ________ | _________ | ___ |
+- Raised by: Consumer / Provider
+- Endpoint:
+- Concern:
+- Proposal:
+- Resolution: Accepted / Rejected / Modified
+- Rationale:
+- Impact:
+
+---
+
+## Issue #3
+
+- Raised by: Consumer / Provider
+- Endpoint:
+- Concern:
+- Proposal:
+- Resolution: Accepted / Rejected / Modified
+- Rationale:
+- Impact:
+
+---
+
+## Issue #4
+
+- Raised by: Consumer / Provider
+- Endpoint:
+- Concern:
+- Proposal:
+- Resolution: Accepted / Rejected / Modified
+- Rationale:
+- Impact:
+
+---
+
+## Issue #5
+
+- Raised by: Consumer / Provider
+- Endpoint:
+- Concern:
+- Proposal:
+- Resolution: Accepted / Rejected / Modified
+- Rationale:
+- Impact:
+
+---
+
+## Issue #6
+
+- Raised by: Consumer / Provider
+- Endpoint:
+- Concern:
+- Proposal:
+- Resolution: Accepted / Rejected / Modified
+- Rationale:
+- Impact:
+
+---
+
+# Chốt hợp đồng v1.0
+
+Provider sign-off:  
+Consumer sign-off:  
+Witness (GV/TA):    
+Date:               
+
+---
+
+## Ghi chú warning nếu Spectral còn cảnh báo
+
+| Warning | Lý do chấp nhận tạm thời | Kế hoạch sửa |
+|---|---|---|
+|  |  |  |
