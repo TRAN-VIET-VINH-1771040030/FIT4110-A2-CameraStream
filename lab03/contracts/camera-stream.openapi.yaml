@@ -1,0 +1,137 @@
+openapi: 3.1.0
+info:
+  title: Camera Stream Service API
+  description: Camera Stream Service for Smart Campus
+  version: 1.0.0
+  contact:
+    name: Camera Stream Team
+
+servers:
+  - url: http://localhost:8000
+    description: Local development
+
+tags:
+  - name: Camera Management
+  - name: Frame Management
+  - name: AI Analysis
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      tags:
+        - Camera Management
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+
+  /cameras:
+    get:
+      summary: Get all cameras
+      operationId: getCameras
+      tags:
+        - Camera Management
+      responses:
+        '200':
+          description: List of cameras
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Camera'
+
+  /cameras/{cameraId}:
+    get:
+      summary: Get camera by ID
+      operationId: getCameraById
+      tags:
+        - Camera Management
+      parameters:
+        - name: cameraId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Camera details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Camera'
+        '404':
+          description: Not found
+
+  /frames:
+    post:
+      summary: Upload frame
+      operationId: uploadFrame
+      tags:
+        - Frame Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FrameUpload'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrameUploadResponse'
+
+components:
+  schemas:
+    Camera:
+      type: object
+      required:
+        - camera_id
+        - name
+        - status
+      properties:
+        camera_id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+
+    FrameUpload:
+      type: object
+      required:
+        - camera_id
+        - image_url
+        - timestamp
+      properties:
+        camera_id:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        timestamp:
+          type: string
+          format: date-time
+
+    FrameUploadResponse:
+      type: object
+      required:
+        - frame_id
+        - status
+      properties:
+        frame_id:
+          type: string
+        status:
+          type: string
+          enum: [accepted]
