@@ -1,15 +1,14 @@
-.env
-.venv/
-venv/
-__pycache__/
-*.pyc
 node_modules/
-reports/*.html
-reports/*.xml
-reports/*.json
-!reports/.gitkeep
-*.tar
-*.zip
+.env
 .DS_Store
-.idea/
-.vscode/
+*.log
+*.tmp
+
+# Do not commit office files to student repo
+*.doc
+*.docx
+*.ppt
+*.pptx
+
+# Optional local captures
+*.har
