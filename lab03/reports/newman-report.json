@@ -1,0 +1,2624 @@
+{
+  "collection": {
+    "_": {
+      "postman_id": "56dced67-eb6d-480e-ae46-ca75488cc7b7",
+      "exporter_id": "57355235",
+      "collection_link": "https://go.postman.co/collection/57355235-56dced67-eb6d-480e-ae46-ca75488cc7b7?source=collection_link"
+    },
+    "item": [
+      {
+        "id": "1aaf0f2b-f8f0-4270-b585-d41b440c347d",
+        "name": "health",
+        "item": [],
+        "event": []
+      },
+      {
+        "id": "9151d838-7da8-416d-bc95-acf9e8df06d9",
+        "name": "cameras",
+        "item": [
+          {
+            "id": "2fdadd98-9cdc-4780-88a6-d25587e619b1",
+            "name": "{cameraId}",
+            "item": [],
+            "event": []
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "6a665c48-6138-47d5-b4ef-a4c4d3cdd647",
+        "name": "frames",
+        "item": [],
+        "event": []
+      },
+      {
+        "id": "3a6def5b-8c9a-4ad5-9daf-3f42864ee01d",
+        "name": "01_Functional",
+        "item": [
+          {
+            "id": "9e462f10-f616-47a6-9cce-639468f6061c",
+            "name": "Kiểm tra trạng thái service",
+            "request": {
+              "description": {
+                "content": "Endpoint kiểm tra service còn hoạt động.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "health"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                }
+              ],
+              "method": "GET"
+            },
+            "response": [
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "9bb60cfd-6bca-408c-91b7-9568d883ca26",
+                "name": "Service đang hoạt động",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "health"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": []
+                  },
+                  "header": [
+                    {
+                      "key": "Accept",
+                      "value": "application/json"
+                    }
+                  ],
+                  "method": "GET"
+                },
+                "status": "OK",
+                "code": 200,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": "{\n  \"status\": \"ok\",\n  \"service\": \"camera-stream-service\",\n  \"time\": \"2026-08-13T10:00:00Z\"\n}",
+                "cookie": []
+              }
+            ],
+            "event": []
+          },
+          {
+            "id": "9dc99c5c-5728-40dd-acd7-df4505bd788b",
+            "name": "Lấy chi tiết camera",
+            "request": {
+              "description": {
+                "content": "Trả về thông tin chi tiết của một camera.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "cameras",
+                  ":cameraId"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": [
+                  {
+                    "description": {
+                      "content": "Mã định danh của camera",
+                      "type": "text/plain"
+                    },
+                    "type": "any",
+                    "value": "cam-4-th5n1-o-",
+                    "key": "cameraId"
+                  }
+                ]
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                }
+              ],
+              "method": "GET"
+            },
+            "response": [
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "f30e3e84-6dd1-4216-9e0e-cbb853899104",
+                "name": "Thông tin camera",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "cameras",
+                      ":cameraId"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": [
+                      {
+                        "description": {
+                          "content": "Mã định danh của camera",
+                          "type": "text/plain"
+                        },
+                        "type": "any",
+                        "value": "cam-4-th5n1-o-",
+                        "key": "cameraId"
+                      }
+                    ]
+                  },
+                  "header": [
+                    {
+                      "key": "Accept",
+                      "value": "application/json"
+                    }
+                  ],
+                  "method": "GET"
+                },
+                "status": "OK",
+                "code": 200,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"name\": \"Cổng chính\",\n  \"status\": \"active\",\n  \"location\": \"Khu vực cổng chính\",\n  \"ip_address\": \"192.168.1.100\",\n  \"stream_url\": \"rtsp://192.168.1.100:554/stream\"\n}",
+                "cookie": []
+              },
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "abaf89f6-de64-44fa-a043-f8df547be5a5",
+                "name": "Resource không tồn tại",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "cameras",
+                      ":cameraId"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": [
+                      {
+                        "description": {
+                          "content": "Mã định danh của camera",
+                          "type": "text/plain"
+                        },
+                        "type": "any",
+                        "value": "cam-4-th5n1-o-",
+                        "key": "cameraId"
+                      }
+                    ]
+                  },
+                  "header": [
+                    {
+                      "key": "Accept",
+                      "value": "application/problem+json"
+                    }
+                  ],
+                  "method": "GET"
+                },
+                "status": "Not Found",
+                "code": 404,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+                "cookie": []
+              },
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "9e84aa06-c8ab-4142-9084-934e90df6796",
+                "name": "Lỗi server",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "cameras",
+                      ":cameraId"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": [
+                      {
+                        "description": {
+                          "content": "Mã định danh của camera",
+                          "type": "text/plain"
+                        },
+                        "type": "any",
+                        "value": "cam-4-th5n1-o-",
+                        "key": "cameraId"
+                      }
+                    ]
+                  },
+                  "header": [
+                    {
+                      "key": "Accept",
+                      "value": "application/problem+json"
+                    }
+                  ],
+                  "method": "GET"
+                },
+                "status": "Internal Server Error",
+                "code": 500,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+                "cookie": []
+              }
+            ],
+            "event": []
+          },
+          {
+            "id": "2572279b-6b77-47ca-b827-71185d5d2173",
+            "name": "Upload frame ảnh",
+            "request": {
+              "description": {
+                "content": "Nhận frame ảnh từ camera và lưu vào hệ thống.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "frames"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+                "options": {
+                  "raw": {
+                    "headerFamily": "json",
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "c17b12fa-97ef-4bd3-9237-76b991c70373",
+                "name": "Frame đã được nhận",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "frames"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": []
+                  },
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Accept",
+                      "value": "application/json"
+                    }
+                  ],
+                  "method": "POST",
+                  "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+                    "options": {
+                      "raw": {
+                        "headerFamily": "json",
+                        "language": "json"
+                      }
+                    }
+                  }
+                },
+                "status": "Accepted",
+                "code": 202,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": "{\n  \"frame_id\": \"frame-20260813-090500-abc123\",\n  \"status\": \"accepted\",\n  \"timestamp\": \"2026-08-13T09:05:01Z\",\n  \"message\": \"Frame accepted for processing\"\n}",
+                "cookie": []
+              },
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "5e483190-bf8f-4119-b2ad-1bb64ffb8d23",
+                "name": "Dữ liệu sai định dạng",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "frames"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": []
+                  },
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Accept",
+                      "value": "application/problem+json"
+                    }
+                  ],
+                  "method": "POST",
+                  "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+                    "options": {
+                      "raw": {
+                        "headerFamily": "json",
+                        "language": "json"
+                      }
+                    }
+                  }
+                },
+                "status": "Bad Request",
+                "code": 400,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+                "cookie": []
+              },
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "b7d17fee-28b5-4c9a-9657-b38807e91d99",
+                "name": "Lỗi server",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "frames"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [],
+                    "variable": []
+                  },
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    },
+                    {
+                      "key": "Accept",
+                      "value": "application/problem+json"
+                    }
+                  ],
+                  "method": "POST",
+                  "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+                    "options": {
+                      "raw": {
+                        "headerFamily": "json",
+                        "language": "json"
+                      }
+                    }
+                  }
+                },
+                "status": "Internal Server Error",
+                "code": 500,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+                "cookie": []
+              }
+            ],
+            "event": []
+          },
+          {
+            "id": "2b59d2e1-7ac7-4b17-99a0-81eb1bdaa83a",
+            "name": "Lấy danh sách camera",
+            "request": {
+              "description": {
+                "content": "Trả về danh sách tất cả camera trong hệ thống.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "cameras"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [
+                  {
+                    "description": {
+                      "content": "Lọc camera theo trạng thái",
+                      "type": "text/plain"
+                    },
+                    "key": "status",
+                    "value": "all"
+                  }
+                ],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                }
+              ],
+              "method": "GET"
+            },
+            "response": [
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "90bf1fbe-d16c-4abf-967d-0b4264d6d1bf",
+                "name": "Danh sách camera",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "cameras"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [
+                      {
+                        "description": {
+                          "content": "Lọc camera theo trạng thái",
+                          "type": "text/plain"
+                        },
+                        "key": "status",
+                        "value": "all"
+                      }
+                    ],
+                    "variable": []
+                  },
+                  "header": [
+                    {
+                      "key": "Accept",
+                      "value": "application/json"
+                    }
+                  ],
+                  "method": "GET"
+                },
+                "status": "OK",
+                "code": 200,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": "[\n  {\n    \"camera_id\": \"cam-gate-01\",\n    \"name\": \"Cổng chính\",\n    \"status\": \"active\",\n    \"location\": \"Khu vực cổng chính\",\n    \"ip_address\": \"192.168.1.100\",\n    \"stream_url\": \"rtsp://192.168.1.100:554/stream\"\n  },\n  {\n    \"camera_id\": \"cam-gate-01\",\n    \"name\": \"Cổng chính\",\n    \"status\": \"active\",\n    \"location\": \"Khu vực cổng chính\",\n    \"ip_address\": \"192.168.1.100\",\n    \"stream_url\": \"rtsp://192.168.1.100:554/stream\"\n  }\n]",
+                "cookie": []
+              },
+              {
+                "_": {
+                  "postman_previewlanguage": "json"
+                },
+                "id": "d308ece2-06eb-4651-8c8d-01310f3eede7",
+                "name": "Lỗi server",
+                "originalRequest": {
+                  "url": {
+                    "path": [
+                      "cameras"
+                    ],
+                    "host": [
+                      "{{baseUrl}}"
+                    ],
+                    "query": [
+                      {
+                        "description": {
+                          "content": "Lọc camera theo trạng thái",
+                          "type": "text/plain"
+                        },
+                        "key": "status",
+                        "value": "all"
+                      }
+                    ],
+                    "variable": []
+                  },
+                  "header": [
+                    {
+                      "key": "Accept",
+                      "value": "application/problem+json"
+                    }
+                  ],
+                  "method": "GET"
+                },
+                "status": "Internal Server Error",
+                "code": 500,
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+                "cookie": []
+              }
+            ],
+            "event": []
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "8d18f9d6-cc86-4dd4-aa14-1555c4907e5f",
+        "name": "02_Auth",
+        "item": [],
+        "event": []
+      },
+      {
+        "id": "23e23617-3fb5-4e98-85a3-d841b50e67f7",
+        "name": "03_Negative",
+        "item": [],
+        "event": []
+      },
+      {
+        "id": "6360e1ff-a87a-4851-9ed6-ed365181e37e",
+        "name": "04_Boundary_Reliability",
+        "item": [],
+        "event": []
+      },
+      {
+        "id": "6c807597-23d0-418d-a840-3efd93dd15ff",
+        "name": "05_Consumer_side_Smoke",
+        "item": [],
+        "event": []
+      },
+      {
+        "id": "b7b7879d-a877-4f69-b22c-8575b83c254b",
+        "name": "06_Local_only_NonFunctional",
+        "item": [],
+        "event": []
+      }
+    ],
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "id": "09f1ce8e-7bd0-4194-a983-010a003c998d",
+          "type": "text/javascript",
+          "packages": {},
+          "exec": [
+            ""
+          ],
+          "_lastExecutionId": "9f7226dc-9659-4270-b764-4a764a87018a"
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "id": "4f677c80-6085-4f50-8baa-c5e697dccb86",
+          "type": "text/javascript",
+          "packages": {},
+          "exec": [
+            ""
+          ],
+          "_lastExecutionId": "aa2db2bf-4833-4974-896b-07a8038f2059"
+        }
+      }
+    ],
+    "variable": [
+      {
+        "type": "any",
+        "value": "http://localhost:8000",
+        "key": "baseUrl"
+      }
+    ],
+    "info": {
+      "_postman_id": "56dced67-eb6d-480e-ae46-ca75488cc7b7",
+      "name": "Camera Stream Service API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": {
+        "content": "Service nhận dữ liệu từ camera, quản lý frame ảnh/video stream,\nvà gọi AI Vision khi phát hiện điều kiện cần phân tích.\n\n**Product:** A\n**Team:** Camera Stream\n\n\nContact Support:\n Name: Camera Stream Team\n Email: camera-stream@smartcampus.edu.vn",
+        "type": "text/plain"
+      }
+    }
+  },
+  "environment": {
+    "_": {
+      "postman_variable_scope": "environment",
+      "postman_exported_at": "2026-08-16T14:10:38.924Z",
+      "postman_exported_using": "Postman/12.23.8"
+    },
+    "id": "a9f13b82-a38a-49c3-aace-0d08b44fdc28",
+    "name": "Camera Stream - Mock",
+    "values": [
+      {
+        "type": "any",
+        "value": "http://localhost:4010",
+        "key": "baseUrl"
+      },
+      {
+        "type": "any",
+        "value": "mock-token-123",
+        "key": "authToken"
+      },
+      {
+        "type": "any",
+        "value": "mock",
+        "key": "env"
+      }
+    ]
+  },
+  "globals": {
+    "id": "f80b0760-5874-45d2-b037-28b84592bfb3",
+    "values": []
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 8,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 0,
+        "pending": 0,
+        "failed": 0
+      },
+      "testScripts": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 4,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 29.5,
+      "responseMin": 10,
+      "responseMax": 69,
+      "responseSd": 23.264780248263683,
+      "dnsAverage": 0,
+      "dnsMin": 0,
+      "dnsMax": 0,
+      "dnsSd": 0,
+      "firstByteAverage": 0,
+      "firstByteMin": 0,
+      "firstByteMax": 0,
+      "firstByteSd": 0,
+      "started": 1786889764316,
+      "completed": 1786889764704
+    },
+    "executions": [
+      {
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 4,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "de0cabe9-895a-435e-babe-24c294fc2268",
+          "httpRequestId": "8db653a3-f6ab-44bd-9066-69a1959f8bcf"
+        },
+        "item": {
+          "id": "9e462f10-f616-47a6-9cce-639468f6061c",
+          "name": "Kiểm tra trạng thái service",
+          "request": {
+            "description": {
+              "content": "Endpoint kiểm tra service còn hoạt động.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "9bb60cfd-6bca-408c-91b7-9568d883ca26",
+              "name": "Service đang hoạt động",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET"
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\",\n  \"service\": \"camera-stream-service\",\n  \"time\": \"2026-08-13T10:00:00Z\"\n}",
+              "cookie": []
+            }
+          ],
+          "event": []
+        },
+        "request": {
+          "description": {
+            "content": "Endpoint kiểm tra service còn hoạt động.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "http",
+            "port": "4010",
+            "path": [
+              "health"
+            ],
+            "host": [
+              "localhost"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "98a00a99-346d-42a1-83db-fa773cbfe1c2",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "localhost:4010",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "5def22d4-e049-431c-a12b-9fe7f9af6c0f",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "79"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 16 Aug 2026 14:16:04 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              34,
+              58,
+              34,
+              111,
+              107,
+              34,
+              44,
+              34,
+              115,
+              101,
+              114,
+              118,
+              105,
+              99,
+              101,
+              34,
+              58,
+              34,
+              99,
+              97,
+              109,
+              101,
+              114,
+              97,
+              45,
+              115,
+              116,
+              114,
+              101,
+              97,
+              109,
+              45,
+              115,
+              101,
+              114,
+              118,
+              105,
+              99,
+              101,
+              34,
+              44,
+              34,
+              116,
+              105,
+              109,
+              101,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              48,
+              56,
+              45,
+              49,
+              51,
+              84,
+              49,
+              48,
+              58,
+              48,
+              48,
+              58,
+              48,
+              48,
+              90,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 69,
+          "responseSize": 79
+        },
+        "id": "9e462f10-f616-47a6-9cce-639468f6061c"
+      },
+      {
+        "cursor": {
+          "ref": "5cfdc700-cb78-44b4-985b-601115ea1852",
+          "length": 4,
+          "cycles": 1,
+          "position": 1,
+          "iteration": 0,
+          "httpRequestId": "5472ebef-d176-495b-9b3e-5b47c9cd8fa3"
+        },
+        "item": {
+          "id": "9dc99c5c-5728-40dd-acd7-df4505bd788b",
+          "name": "Lấy chi tiết camera",
+          "request": {
+            "description": {
+              "content": "Trả về thông tin chi tiết của một camera.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cameras",
+                ":cameraId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": {
+                    "content": "Mã định danh của camera",
+                    "type": "text/plain"
+                  },
+                  "type": "any",
+                  "value": "cam-4-th5n1-o-",
+                  "key": "cameraId"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "f30e3e84-6dd1-4216-9e0e-cbb853899104",
+              "name": "Thông tin camera",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cameras",
+                    ":cameraId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "Mã định danh của camera",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "cam-4-th5n1-o-",
+                      "key": "cameraId"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET"
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"name\": \"Cổng chính\",\n  \"status\": \"active\",\n  \"location\": \"Khu vực cổng chính\",\n  \"ip_address\": \"192.168.1.100\",\n  \"stream_url\": \"rtsp://192.168.1.100:554/stream\"\n}",
+              "cookie": []
+            },
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "abaf89f6-de64-44fa-a043-f8df547be5a5",
+              "name": "Resource không tồn tại",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cameras",
+                    ":cameraId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "Mã định danh của camera",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "cam-4-th5n1-o-",
+                      "key": "cameraId"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET"
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+              "cookie": []
+            },
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "9e84aa06-c8ab-4142-9084-934e90df6796",
+              "name": "Lỗi server",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cameras",
+                    ":cameraId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": {
+                        "content": "Mã định danh của camera",
+                        "type": "text/plain"
+                      },
+                      "type": "any",
+                      "value": "cam-4-th5n1-o-",
+                      "key": "cameraId"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET"
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+              "cookie": []
+            }
+          ],
+          "event": []
+        },
+        "request": {
+          "description": {
+            "content": "Trả về thông tin chi tiết của một camera.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "http",
+            "port": "4010",
+            "path": [
+              "cameras",
+              "cam-4-th5n1-o-"
+            ],
+            "host": [
+              "localhost"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "86bc0fab-0ec7-4881-966d-93cca477c8dc",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "localhost:4010",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "5fab08bd-485d-4f72-b9a8-2bc4c26a7508",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "181"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 16 Aug 2026 14:16:04 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              97,
+              109,
+              101,
+              114,
+              97,
+              95,
+              105,
+              100,
+              34,
+              58,
+              34,
+              99,
+              97,
+              109,
+              45,
+              103,
+              97,
+              116,
+              101,
+              45,
+              48,
+              49,
+              34,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              67,
+              225,
+              187,
+              149,
+              110,
+              103,
+              32,
+              99,
+              104,
+              195,
+              173,
+              110,
+              104,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              34,
+              58,
+              34,
+              97,
+              99,
+              116,
+              105,
+              118,
+              101,
+              34,
+              44,
+              34,
+              108,
+              111,
+              99,
+              97,
+              116,
+              105,
+              111,
+              110,
+              34,
+              58,
+              34,
+              75,
+              104,
+              117,
+              32,
+              118,
+              225,
+              187,
+              177,
+              99,
+              32,
+              99,
+              225,
+              187,
+              149,
+              110,
+              103,
+              32,
+              99,
+              104,
+              195,
+              173,
+              110,
+              104,
+              34,
+              44,
+              34,
+              105,
+              112,
+              95,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              34,
+              58,
+              34,
+              49,
+              57,
+              50,
+              46,
+              49,
+              54,
+              56,
+              46,
+              49,
+              46,
+              49,
+              48,
+              48,
+              34,
+              44,
+              34,
+              115,
+              116,
+              114,
+              101,
+              97,
+              109,
+              95,
+              117,
+              114,
+              108,
+              34,
+              58,
+              34,
+              114,
+              116,
+              115,
+              112,
+              58,
+              47,
+              47,
+              49,
+              57,
+              50,
+              46,
+              49,
+              54,
+              56,
+              46,
+              49,
+              46,
+              49,
+              48,
+              48,
+              58,
+              53,
+              53,
+              52,
+              47,
+              115,
+              116,
+              114,
+              101,
+              97,
+              109,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 23,
+          "responseSize": 181
+        },
+        "id": "9dc99c5c-5728-40dd-acd7-df4505bd788b"
+      },
+      {
+        "cursor": {
+          "ref": "b09be1a6-e6fe-46f9-b8f1-71af4165bc79",
+          "length": 4,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "e4d6fe29-864a-4317-a257-74223285e8f1"
+        },
+        "item": {
+          "id": "2572279b-6b77-47ca-b827-71185d5d2173",
+          "name": "Upload frame ảnh",
+          "request": {
+            "description": {
+              "content": "Nhận frame ảnh từ camera và lưu vào hệ thống.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "frames"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "c17b12fa-97ef-4bd3-9237-76b991c70373",
+              "name": "Frame đã được nhận",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "frames"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"frame_id\": \"frame-20260813-090500-abc123\",\n  \"status\": \"accepted\",\n  \"timestamp\": \"2026-08-13T09:05:01Z\",\n  \"message\": \"Frame accepted for processing\"\n}",
+              "cookie": []
+            },
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "5e483190-bf8f-4119-b2ad-1bb64ffb8d23",
+              "name": "Dữ liệu sai định dạng",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "frames"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+              "cookie": []
+            },
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "b7d17fee-28b5-4c9a-9657-b38807e91d99",
+              "name": "Lỗi server",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "frames"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+              "cookie": []
+            }
+          ],
+          "event": []
+        },
+        "request": {
+          "description": {
+            "content": "Nhận frame ảnh từ camera và lưu vào hệ thống.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "http",
+            "port": "4010",
+            "path": [
+              "frames"
+            ],
+            "host": [
+              "localhost"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "968ffdbc-cfd9-4db0-a114-b30fff5a63ba",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "localhost:4010",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "236",
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"camera_id\": \"cam-gate-01\",\n  \"image_url\": \"https://storage.smartcampus.edu.vn/frames/frame.jpg\",\n  \"timestamp\": \"2026-08-13T09:05:00Z\",\n  \"motion_detected\": true,\n  \"metadata\": {\n    \"resolution\": \"1920x1080\",\n    \"fps\": \"30\"\n  }\n}",
+            "options": {
+              "raw": {
+                "headerFamily": "json",
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "b2935bfa-0353-4502-91c1-c8ddefffe18d",
+          "status": "Accepted",
+          "code": 202,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "140"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 16 Aug 2026 14:16:04 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              102,
+              114,
+              97,
+              109,
+              101,
+              95,
+              105,
+              100,
+              34,
+              58,
+              34,
+              102,
+              114,
+              97,
+              109,
+              101,
+              45,
+              50,
+              48,
+              50,
+              54,
+              48,
+              56,
+              49,
+              51,
+              45,
+              48,
+              57,
+              48,
+              53,
+              48,
+              48,
+              45,
+              97,
+              98,
+              99,
+              49,
+              50,
+              51,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              34,
+              58,
+              34,
+              97,
+              99,
+              99,
+              101,
+              112,
+              116,
+              101,
+              100,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              70,
+              114,
+              97,
+              109,
+              101,
+              32,
+              97,
+              99,
+              99,
+              101,
+              112,
+              116,
+              101,
+              100,
+              32,
+              102,
+              111,
+              114,
+              32,
+              112,
+              114,
+              111,
+              99,
+              101,
+              115,
+              115,
+              105,
+              110,
+              103,
+              34,
+              44,
+              34,
+              116,
+              105,
+              109,
+              101,
+              115,
+              116,
+              97,
+              109,
+              112,
+              34,
+              58,
+              34,
+              50,
+              48,
+              50,
+              54,
+              45,
+              48,
+              56,
+              45,
+              49,
+              51,
+              84,
+              48,
+              57,
+              58,
+              48,
+              53,
+              58,
+              48,
+              49,
+              90,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 16,
+          "responseSize": 140
+        },
+        "id": "2572279b-6b77-47ca-b827-71185d5d2173"
+      },
+      {
+        "cursor": {
+          "ref": "e46a3a07-2cbe-4da8-a557-0c2580757d73",
+          "length": 4,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "77d6bb37-4fad-4ca0-b18a-df17b3f45a91"
+        },
+        "item": {
+          "id": "2b59d2e1-7ac7-4b17-99a0-81eb1bdaa83a",
+          "name": "Lấy danh sách camera",
+          "request": {
+            "description": {
+              "content": "Trả về danh sách tất cả camera trong hệ thống.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cameras"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "description": {
+                    "content": "Lọc camera theo trạng thái",
+                    "type": "text/plain"
+                  },
+                  "key": "status",
+                  "value": "all"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "90bf1fbe-d16c-4abf-967d-0b4264d6d1bf",
+              "name": "Danh sách camera",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cameras"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "description": {
+                        "content": "Lọc camera theo trạng thái",
+                        "type": "text/plain"
+                      },
+                      "key": "status",
+                      "value": "all"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET"
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"camera_id\": \"cam-gate-01\",\n    \"name\": \"Cổng chính\",\n    \"status\": \"active\",\n    \"location\": \"Khu vực cổng chính\",\n    \"ip_address\": \"192.168.1.100\",\n    \"stream_url\": \"rtsp://192.168.1.100:554/stream\"\n  },\n  {\n    \"camera_id\": \"cam-gate-01\",\n    \"name\": \"Cổng chính\",\n    \"status\": \"active\",\n    \"location\": \"Khu vực cổng chính\",\n    \"ip_address\": \"192.168.1.100\",\n    \"stream_url\": \"rtsp://192.168.1.100:554/stream\"\n  }\n]",
+              "cookie": []
+            },
+            {
+              "_": {
+                "postman_previewlanguage": "json"
+              },
+              "id": "d308ece2-06eb-4651-8c8d-01310f3eede7",
+              "name": "Lỗi server",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cameras"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "description": {
+                        "content": "Lọc camera theo trạng thái",
+                        "type": "text/plain"
+                      },
+                      "key": "status",
+                      "value": "all"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET"
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"https://campus.local/errors/validation\",\n  \"title\": \"Dữ liệu không hợp lệ\",\n  \"status\": 400,\n  \"detail\": \"Field camera_id không đúng định dạng\",\n  \"instance\": \"https://CsCRQlSHBdpSUGfVYuLVzcUh.fuXmD7zXhQsUZ-oglmkb.7GqWLkMiQ+7ZckInV-Kz.HqZwJr9mFN\",\n  \"errors\": [\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"field\": \"string\",\n      \"code\": \"string\",\n      \"message\": \"string\"\n    }\n  ]\n}",
+              "cookie": []
+            }
+          ],
+          "event": []
+        },
+        "request": {
+          "description": {
+            "content": "Trả về danh sách tất cả camera trong hệ thống.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "http",
+            "port": "4010",
+            "path": [
+              "cameras"
+            ],
+            "host": [
+              "localhost"
+            ],
+            "query": [
+              {
+                "key": "status",
+                "value": "all"
+              }
+            ],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.39.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "9a7b1f77-9be1-443e-9e53-de7f42f4c18a",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "localhost:4010",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "a2955aeb-6b91-4c09-8be3-6facd3c0eb57",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Credentials",
+              "value": "true"
+            },
+            {
+              "key": "Access-Control-Expose-Headers",
+              "value": "*"
+            },
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Length",
+              "value": "368"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 16 Aug 2026 14:16:04 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              91,
+              123,
+              34,
+              99,
+              97,
+              109,
+              101,
+              114,
+              97,
+              95,
+              105,
+              100,
+              34,
+              58,
+              34,
+              99,
+              97,
+              109,
+              45,
+              103,
+              97,
+              116,
+              101,
+              45,
+              48,
+              49,
+              34,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              67,
+              225,
+              187,
+              149,
+              110,
+              103,
+              32,
+              99,
+              104,
+              195,
+              173,
+              110,
+              104,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              34,
+              58,
+              34,
+              97,
+              99,
+              116,
+              105,
+              118,
+              101,
+              34,
+              44,
+              34,
+              108,
+              111,
+              99,
+              97,
+              116,
+              105,
+              111,
+              110,
+              34,
+              58,
+              34,
+              75,
+              104,
+              117,
+              32,
+              118,
+              225,
+              187,
+              177,
+              99,
+              32,
+              99,
+              225,
+              187,
+              149,
+              110,
+              103,
+              32,
+              99,
+              104,
+              195,
+              173,
+              110,
+              104,
+              34,
+              44,
+              34,
+              105,
+              112,
+              95,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              34,
+              58,
+              34,
+              49,
+              57,
+              50,
+              46,
+              49,
+              54,
+              56,
+              46,
+              49,
+              46,
+              49,
+              48,
+              48,
+              34,
+              44,
+              34,
+              115,
+              116,
+              114,
+              101,
+              97,
+              109,
+              95,
+              117,
+              114,
+              108,
+              34,
+              58,
+              34,
+              114,
+              116,
+              115,
+              112,
+              58,
+              47,
+              47,
+              49,
+              57,
+              50,
+              46,
+              49,
+              54,
+              56,
+              46,
+              49,
+              46,
+              49,
+              48,
+              48,
+              58,
+              53,
+              53,
+              52,
+              47,
+              115,
+              116,
+              114,
+              101,
+              97,
+              109,
+              34,
+              125,
+              44,
+              123,
+              34,
+              99,
+              97,
+              109,
+              101,
+              114,
+              97,
+              95,
+              105,
+              100,
+              34,
+              58,
+              34,
+              99,
+              97,
+              109,
+              45,
+              112,
+              97,
+              114,
+              107,
+              105,
+              110,
+              103,
+              45,
+              48,
+              49,
+              34,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              66,
+              195,
+              163,
+              105,
+              32,
+              196,
+              145,
+              225,
+              187,
+              151,
+              32,
+              120,
+              101,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              34,
+              58,
+              34,
+              97,
+              99,
+              116,
+              105,
+              118,
+              101,
+              34,
+              44,
+              34,
+              108,
+              111,
+              99,
+              97,
+              116,
+              105,
+              111,
+              110,
+              34,
+              58,
+              34,
+              75,
+              104,
+              117,
+              32,
+              118,
+              225,
+              187,
+              177,
+              99,
+              32,
+              98,
+              195,
+              163,
+              105,
+              32,
+              196,
+              145,
+              225,
+              187,
+              151,
+              32,
+              120,
+              101,
+              34,
+              44,
+              34,
+              105,
+              112,
+              95,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              34,
+              58,
+              34,
+              49,
+              57,
+              50,
+              46,
+              49,
+              54,
+              56,
+              46,
+              49,
+              46,
+              49,
+              48,
+              49,
+              34,
+              44,
+              34,
+              115,
+              116,
+              114,
+              101,
+              97,
+              109,
+              95,
+              117,
+              114,
+              108,
+              34,
+              58,
+              34,
+              114,
+              116,
+              115,
+              112,
+              58,
+              47,
+              47,
+              49,
+              57,
+              50,
+              46,
+              49,
+              54,
+              56,
+              46,
+              49,
+              46,
+              49,
+              48,
+              49,
+              58,
+              53,
+              53,
+              52,
+              47,
+              115,
+              116,
+              114,
+              101,
+              97,
+              109,
+              34,
+              125,
+              93
+            ]
+          },
+          "cookie": [],
+          "responseTime": 10,
+          "responseSize": 368
+        },
+        "id": "2b59d2e1-7ac7-4b17-99a0-81eb1bdaa83a"
+      }
+    ],
+    "transfers": {
+      "responseTotal": 768
+    },
+    "failures": [],
+    "error": null
+  }
+}
