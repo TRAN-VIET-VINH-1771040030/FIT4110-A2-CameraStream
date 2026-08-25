@@ -1,327 +1,147 @@
-# FIT4110_lab04_docker_packaging
+# Lab 05 - Docker Compose & Readiness Check
 
-**Học phần:** FIT4110 – Dịch vụ kết nối và Công nghệ nền tảng  
-**Buổi 4:** Đóng gói service với Docker & tư duy công nghệ nền tảng  
-**Case study:** Smart Campus Operations Platform  
-**Repo nền:** `FIT4110_lab03_postman_mock_testing`
-
-> Lab 03 đã có OpenAPI contract, Postman Collection, Mock Server và Newman report.  
-> Lab 04 dùng lại logic đó để kiểm tra một điều mới: **service có chạy ổn khi được đóng gói thành Docker container không?**
+**Camera Stream Service** - Điều phối đa dịch vụ với Docker Compose
 
 ---
 
-## 1. Ý tưởng nối tiếp từ Lab 03 sang Lab 04
+## 📌 Mục tiêu
 
-Ở Lab 03, luồng làm việc là:
-
-```text
-OpenAPI Contract → Mock Server → Postman Test → Newman Report → CI Evidence
-```
-
-Ở Lab 04, luồng đó được mở rộng thành:
-
-```text
-OpenAPI Contract
-→ Service thật
-→ Dockerfile
-→ Docker Image
-→ Docker Container
-→ Postman/Newman chạy lại trên container
-→ Evidence
-```
-
-Lab 04 hiện đã đồng bộ lại với contract IoT của Lab 03 theo payload:
-
-```json
-{
-  "device_id": "ESP32-LAB-A01",
-  "metric": "temperature",
-  "value": 31.5,
-  "unit": "celsius",
-  "timestamp": "2026-05-13T08:30:00+07:00"
-}
-```
-
-Boundary dùng trong bài:
-
-```text
-temperature: -40 đến 80
-```
-
-Thông điệp chính của buổi học:
-
-> Một API pass Postman trên máy cá nhân chưa đủ.  
-> Service cần được đóng gói thành container để người khác có thể chạy lại nhất quán.
+- Định nghĩa và chạy nhiều service với Docker Compose
+- Kết nối API, Database (PostgreSQL), AI Service (mock)
+- Sử dụng healthcheck và `depends_on` để đảm bảo thứ tự khởi động
+- Service discovery qua tên service (DNS nội bộ)
 
 ---
 
-## 2. Mục tiêu sau buổi lab
+## 🏗️ Cấu trúc hệ thống
 
-Sau khi hoàn thành Lab 04, mỗi nhóm cần làm được:
-
-- Viết được `Dockerfile` cho service của nhóm.
-- Dùng `.dockerignore` để giảm context build.
-- Tách cấu hình runtime qua `.env.example`.
-- Không commit secret thật vào repo.
-- Chạy app bằng user non-root trong container.
-- Có `HEALTHCHECK` gọi `GET /health`.
-- Build được Docker image.
-- Run được container từ image.
-- Chạy lại Postman Collection của Lab 03 trên container.
-- Kiểm tra được functional, auth, negative, boundary và schema lỗi `ProblemDetails`.
-- Xuất Newman report làm bằng chứng.
-- Viết được `RUN_LOCAL.md` hướng dẫn người khác chạy lại trong 3–5 bước.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Docker Compose Stack                     │
+│                                                                │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐      │
+│  │   Database   │   │  AI Service  │   │     API      │      │
+│  │ (PostgreSQL) │   │    (Mock)    │   │  (FastAPI)   │      │
+│  │  port: 5432  │   │  port: 9000  │   │  port: 8001  │      │
+│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘      │
+│         │                  │                  │              │
+│         └──────────────────┼──────────────────┘              │
+│                             │                                 │
+│                    team-internal network                      │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 3. Cấu trúc repo
+## 📁 Cấu trúc thư mục
 
-```text
-FIT4110_lab04_docker_packaging/
-├── README.md
-├── RUN_LOCAL.md
-├── Dockerfile
-├── .dockerignore
-├── .env.example
-├── .gitignore
-├── Makefile
-├── package.json
-├── requirements.txt
+```
+lab05/
+├── docker-compose.yml         # Định nghĩa multi-container
+├── Dockerfile                 # Build API service
+├── Dockerfile.ai              # Build AI service
+├── Makefile                   # Lệnh nhanh
+├── .env.example                # Biến môi trường mẫu
+├── RUN_COMPOSE.md              # Hướng dẫn chạy
+├── README.md                   # Tài liệu lab05
 ├── src/
-│   └── iot_app/
-│       ├── __init__.py
-│       └── main.py
-├── contracts/
-│   └── iot-ingestion.openapi.yaml
+│   ├── camera_app/
+│   │   └── main.py             # Camera Stream API
+│   └── ai_service/
+│       ├── main.py             # AI Vision Mock
+│       └── requirements.txt
+├── checklists/
+│   └── readiness-checklist.md  # Checklist readiness
 ├── postman/
 │   ├── collections/
-│   │   └── FIT4110_lab04_iot_docker.postman_collection.json
 │   └── environments/
-│       ├── FIT4110_lab04_mock.postman_environment.json
-│       └── FIT4110_lab04_local.postman_environment.json
-├── mock-data/
-├── scripts/
-├── docs/
-├── checklists/
-├── templates/
-├── reports/
-└── .github/
-    └── workflows/
-        └── docker-newman.yml
+└── reports/
+    └── newman-lab05-compose.json
 ```
 
 ---
 
-## 4. Chuẩn bị môi trường
+## 🚀 Cách chạy
 
-Cần cài trước:
-
-- Git
-- Docker Desktop hoặc Docker Engine
-- Node.js 20.x LTS
-- npm
-- Postman Desktop hoặc Postman Web
-
-Cài dependencies phục vụ Prism, Spectral, Newman:
+### 1. Clone repository
 
 ```bash
-npm install
+git clone https://github.com/TRAN-VIET-VINH-1771040030/FIT4110-A2-CameraStream.git
+cd FIT4110-A2-CameraStream/lab05
 ```
 
-Kiểm tra:
+### 2. Tạo file .env
 
 ```bash
-docker --version
-docker info
-node --version
-npx newman --version
-npx prism --version
+cp .env.example .env
+```
+
+### 3. Chạy Docker Compose
+
+```bash
+docker compose up -d --build
+```
+
+### 4. Kiểm tra các service
+
+```bash
+# Kiểm tra API
+curl http://localhost:8001/health
+
+# Kiểm tra AI Service
+curl http://localhost:9000/health
+
+# Kiểm tra container
+docker compose ps
+```
+
+### 5. Chạy Newman test
+
+```bash
+npx newman run postman/collections/CameraStream.postman_collection.json \
+  -e postman/environments/CameraStream_local.postman_environment.json \
+  -r cli,json --reporter-json-export reports/newman-lab05-compose.json
+```
+
+### 6. Dừng stack
+
+```bash
+docker compose down
 ```
 
 ---
 
-## 5. Chạy service local không dùng Docker
+## 📊 Kết quả
 
-Cài Python dependencies:
+| Service | Trạng thái | Port |
+|---|---|---|
+| Database | ✅ Healthy | (internal) |
+| AI Service | ✅ Healthy | 9000 |
+| API | ✅ Healthy | 8001 |
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Chạy API:
-
-```bash
-uvicorn iot_app.main:app --app-dir src --host 0.0.0.0 --port 8000
-```
-
-Kiểm tra:
-
-```bash
-curl http://localhost:8000/health
-```
+**Newman test:** ✅ 4/4 PASS
 
 ---
 
-## 6. Build và chạy bằng Docker
+## 📋 Service Discovery
 
-Build image:
+Trong Docker Compose, các service gọi nhau bằng tên service:
 
-```bash
-docker build -t fit4110/iot-ingestion:lab04 .
-```
-
-Run container:
-
-```bash
-docker run --rm \
-  --name fit4110-iot-lab04 \
-  -p 8000:8000 \
-  --env-file .env.example \
-  fit4110/iot-ingestion:lab04
-```
-
-Kiểm tra health:
-
-```bash
-curl http://localhost:8000/health
-```
+| Từ | Gọi | URL |
+|---|---|---|
+| API | Database | `db:5432` |
+| API | AI Service | `ai-service:9000` |
+| Host | API | `http://localhost:8001` |
 
 ---
 
-## 7. Chạy lại Postman Collection trên container
-
-Chạy Newman với local environment:
+## 📤 Commit
 
 ```bash
-npm run test:local
+git add lab05/
+git commit -m "lab05: complete docker compose with newman test pass"
+git push origin main
 ```
 
-Hoặc dùng script:
-
-```bash
-bash scripts/run-newman.sh local
-```
-
-Report được sinh trong:
-
-```text
-reports/
-```
-
----
-
-## 8. Các lệnh nhanh bằng Makefile
-
-```bash
-make install
-make lint
-make mock
-make test-mock
-make build
-make run
-make test-docker
-make stop
-```
-
----
-
-## 9. Bài làm của từng nhóm
-
-Mỗi nhóm dùng repo này làm mẫu, sau đó thay phần IoT bằng service của mình.
-
-| Nhóm | Cần thay đổi |
-|---|---|
-| `team-iot` | Có thể dùng mẫu này trực tiếp, mở rộng thêm endpoint từ Lab 03 |
-| `team-camera` | Thay `src/` bằng Camera Stream service, thêm OpenCV headless |
-| `team-gate` | Thay bằng Access Gate service, lưu ý biến môi trường DB |
-| `team-vision` | Thay bằng AI Vision service, chuẩn bị model YOLOv8n hoặc mock model |
-| `team-analytics` | Thay bằng Analytics service, chưa bắt buộc TimescaleDB trong Lab 04 |
-| `team-core` | Thay bằng Core Business policy engine |
-| `team-notify` | Thay bằng Notification service, không commit token thật |
-
----
-
-## 10. Điều kiện hoàn thành Lab 04
-
-Một nhóm được xem là hoàn thành khi:
-
-- `Dockerfile` build được image.
-- Image chạy được container.
-- Container có `GET /health` trả `200`.
-- Service chạy bằng non-root user.
-- Có `.dockerignore`.
-- Có `.env.example`.
-- Có `RUN_LOCAL.md`.
-- Chạy lại Postman/Newman pass trên container.
-- Có test cho functional, auth, negative, boundary.
-- Error response trả đúng dạng `ProblemDetails`.
-- Có report trong `reports/`.
-- Có bằng chứng image tag đúng quy ước.
-
-Tag gợi ý:
-
-```text
-v0.1.0-<team>
-```
-
-Ví dụ:
-
-```bash
-docker tag fit4110/iot-ingestion:lab04 ghcr.io/<owner>/team-iot:v0.1.0-team-iot
-```
-
----
-
-## 11. Artefact cần nộp
-
-```text
-Dockerfile
-.dockerignore
-.env.example
-RUN_LOCAL.md
-contracts/<team>.openapi.yaml
-postman/collections/<team>.postman_collection.json
-postman/environments/<team>_local.postman_environment.json
-reports/newman-lab04-local.xml
-reports/newman-lab04-local.html
-ảnh chụp /health hoặc log container
-tag image đã push lên registry
-```
-
----
-
-## 12. Rubric gợi ý
-
-| Tiêu chí | Điểm |
-|---|---:|
-| Dockerfile đúng, build được | 2.0 |
-| Container chạy được và `/health` pass | 2.0 |
-| Non-root, `.dockerignore`, `.env.example` tốt | 2.0 |
-| Newman/Postman test pass trên container | 2.0 |
-| RUN_LOCAL.md rõ ràng, người khác chạy lại được | 1.0 |
-| Evidence đầy đủ: log/report/image tag | 1.0 |
-| **Tổng** | **10.0** |
-
----
-
-## 13. Tinh thần của buổi học
-
-Sau Buổi 3, nhóm đã chứng minh:
-
-```text
-API đúng contract khi kiểm thử bằng Postman/Newman.
-```
-
-Sau Buổi 4, nhóm cần chứng minh thêm:
-
-```text
-API đó có thể được đóng gói, chạy lại và kiểm thử trong container.
-```
-
-Đây là bước đệm trực tiếp cho Buổi 5:
-
-```text
-Docker container đơn lẻ → Docker Compose nhiều service → Plug-a-thon.
-```
+**Ngày hoàn thành:** 2026-08-25
+**Team:** Camera Stream
