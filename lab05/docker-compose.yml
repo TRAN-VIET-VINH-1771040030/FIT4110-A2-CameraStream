@@ -1,4 +1,5 @@
 ﻿services:
+  # 1. Database PostgreSQL
   db:
     image: postgres:16-alpine
     container_name: camera-db-lab05
@@ -18,25 +19,13 @@
       start_period: 10s
     restart: unless-stopped
 
-  redis:
-    image: redis:7-alpine
-    container_name: camera-redis-lab05
-    networks:
-      - team-internal
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
+  # 2. Worker (xử lý tác vụ nền)
   worker:
     build:
       context: .
       dockerfile: Dockerfile.worker
     container_name: camera-worker-lab05
     environment:
-      - REDIS_URL=redis://redis:6379
       - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=postgres
@@ -48,10 +37,9 @@
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     restart: unless-stopped
 
+  # 3. Camera Stream API
   api:
     build:
       context: .
@@ -65,7 +53,6 @@
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_NAME=postgres
-      - REDIS_URL=redis://redis:6379
       - AI_VISION_URL=http://ai-vision-team:8000
       - AUTH_TOKEN=${AUTH_TOKEN:-local-dev-token}
     ports:
@@ -75,8 +62,8 @@
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_healthy
+      worker:
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
