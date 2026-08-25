@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # 1. Database PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: camera-db-lab05
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-camera_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-camera_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-camera_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - team-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-camera_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # 2. AI Vision Service (mock)
+  ai-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai
+    container_name: camera-ai-lab05
+    environment:
+      - MODEL_PATH=/app/models/yolov8n.pt
+      - CONFIDENCE_THRESHOLD=0.5
+    ports:
+      - "9000:9000"
+    networks:
+      - team-internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+  # 3. Camera Stream API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: camera-api-lab05
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${POSTGRES_USER:-camera_user}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-camera_pass}
+      - DB_NAME=${POSTGRES_DB:-camera_db}
+      - AI_SERVICE_URL=http://ai-service:9000
+      - AUTH_TOKEN=${AUTH_TOKEN:-local-dev-token}
+    ports:
+      - "8001:8000"
+    networks:
+      - team-internal
+    depends_on:
+      db:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+networks:
+  team-internal:
+    driver: bridge
+    name: camera-team-internal
+
+volumes:
+  postgres_data:
+    name: camera-postgres-data
