@@ -1,7 +1,174 @@
 # Lab 05 - Docker Compose & Readiness Check
 
 **Camera Stream Service** - Điều phối đa dịch vụ với Docker Compose
+# Lab 05 - Docker Compose & Readiness Check
 
+**Camera Stream Service** - Điều phối đa dịch vụ với Docker Compose
+
+---
+
+## 📌 Mục tiêu
+
+- Định nghĩa và chạy nhiều service với Docker Compose
+- Kết nối API, Database (PostgreSQL), và Worker
+- Sử dụng healthcheck và `depends_on` để đảm bảo thứ tự khởi động
+- Service discovery qua tên service (DNS nội bộ)
+
+---
+
+## 🏗️ Cấu trúc hệ thống
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                       Docker Compose Stack                       │
+│                                                                    │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐          │
+│  │   Database   │   │    Worker    │   │     API      │          │
+│  │ (PostgreSQL) │   │ (Processor)  │   │  (FastAPI)   │          │
+│  │  port: 5432  │   │              │   │  port: 8001  │          │
+│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘          │
+│         │                  │                  │                  │
+│         └──────────────────┼──────────────────┘                  │
+│                             │                                     │
+│                     team-internal network                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📁 Cấu trúc thư mục
+
+```
+lab05/
+├── docker-compose.yml          # Định nghĩa multi-container
+├── Dockerfile                  # Build API service
+├── Dockerfile.worker           # Build Worker service
+├── Makefile                    # Lệnh nhanh
+├── .env.example                 # Biến môi trường mẫu
+├── RUN_COMPOSE.md               # Hướng dẫn chạy
+├── README.md                    # Tài liệu lab05
+├── requirements.txt             # API dependencies
+├── requirements.worker.txt      # Worker dependencies
+├── src/
+│   ├── camera_app/
+│   │   └── main.py              # Camera Stream API
+│   └── worker/
+│       ├── __init__.py
+│       └── main.py              # Worker xử lý tác vụ nền
+├── checklists/
+│   └── readiness-checklist.md   # Checklist readiness
+├── postman/
+│   ├── collections/
+│   └── environments/
+└── reports/
+    └── newman-lab05-compose.json
+```
+
+---
+
+## 🚀 Cách chạy
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/TRAN-VIET-VINH-1771040030/FIT4110-A2-CameraStream.git
+cd FIT4110-A2-CameraStream/lab05
+```
+
+### 2. Tạo file .env
+
+```bash
+cp .env.example .env
+```
+
+### 3. Chạy Docker Compose
+
+```bash
+docker compose up -d --build
+```
+
+### 4. Kiểm tra các service
+
+```bash
+# Kiểm tra API
+curl http://localhost:8001/health
+
+# Kiểm tra container
+docker compose ps
+```
+
+### 5. Chạy Newman test
+
+```bash
+npx newman run postman/collections/CameraStream.postman_collection.json \
+  -e postman/environments/CameraStream_local.postman_environment.json \
+  -r cli,json --reporter-json-export reports/newman-lab05-compose.json
+```
+
+### 6. Dừng stack
+
+```bash
+docker compose down
+```
+
+---
+
+## 📊 Kết quả
+
+| Service | Trạng thái | Port |
+|---|---|---|
+| Database | ✅ Healthy | (internal) |
+| Worker | ✅ Running | - |
+| API | ✅ Healthy | 8001 |
+
+**Newman test:** ✅ PASS
+
+---
+
+## 📋 Service Discovery
+
+Trong Docker Compose, các service gọi nhau bằng tên service:
+
+| Từ | Gọi | URL |
+|---|---|---|
+| API | Database | `db:5432` |
+| Worker | Database | `db:5432` |
+| Host | API | `http://localhost:8001` |
+
+---
+
+## 🧪 Kiểm tra Worker
+
+Worker chạy ngầm, không có port. Để kiểm tra:
+
+```bash
+# Xem log worker
+docker logs camera-worker-lab05 --tail 20
+```
+
+---
+
+## 📤 Commit
+
+```bash
+git add lab05/
+git commit -m "lab05: final compose with 3 services (db, worker, api)"
+git push origin main
+```
+
+**Ngày hoàn thành:** 2026-08-25
+**Team:** Camera Stream
+
+---
+
+## 📤 CÁCH COMMIT
+
+```bash
+cd D:\DichVuKetNoi\BT_lab\FIT4110-A2-CameraStream
+git add lab05/README.md
+git commit -m "lab05: update README with complete documentation"
+git push origin main
+```
 ---
 
 ## 📌 Mục tiêu
